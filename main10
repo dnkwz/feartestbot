@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интернет-магазин</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        /* Поисковая строка */
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            background-color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        /* Коллекции */
+        .collections {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 60px;
+            padding: 10px 0;
+            background-color: #fff;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .collection {
+            padding: 10px 20px;
+            background-color: #fff;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .collection.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        /* Сетка товаров */
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px 10px;
+            margin-top: 120px; /* Отступ для фиксированных элементов сверху */
+        }
+
+        .product-card {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .product-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-card button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* Модальное окно для карточки товара */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff; /* Сделаем фон белым для полноэкранного отображения */
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 210;
+        }
+
+        .modal img {
+            width: 100%;
+            border-radius: 15px;
+        }
+
+        .sizes {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .sizes button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        /* Корзина */
+        .cart {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 300;
+            overflow-y: auto;
+        }
+
+        .cart-content {
+            padding: 20px;
+        }
+
+        .cart-close {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 310;
+        }
+
+        .cart h3 {
+            margin-bottom: 20px;
+        }
+
+        .cart input, .cart select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .cart button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* Скрываем каталог, когда открыта модалка */
+        body.modal-open .search-bar,
+        body.modal-open .collections,
+        body.modal-open .products {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Поисковая строка -->
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Поиск товаров...">
+    </div>
+
+    <!-- Коллекции -->
+    <div class="collections">
+        <div class="collection" data-collection="white">Белая</div>
+        <div class="collection" data-collection="black">Черная</div>
+        <div class="collection" data-collection="beige">Бежевая</div>
+    </div>
+
+    <!-- Товары -->
+    <div class="products" id="product-list">
+        <!-- Товары будут динамически добавлены через JS -->
+    </div>
+
+    <!-- Модальное окно для товара -->
+    <div class="modal" id="product-modal">
+        <span class="modal-close" id="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modal-product-img" src="" alt="Товар">
+            <div class="sizes" id="size-buttons">
+                <button>XS</button>
+                <button>S</button>
+                <button>M</button>
+                <button>L</button>
+                <button>XL</button>
+            </div>
+            <button class="add-to-cart" id="add-to-cart-btn">Добавить в корзину</button>
+            <p id="modal-product-description">Описание товара</p>
+        </div>
+    </div>
+
+    <!-- Корзина -->
+    <div class="cart" id="cart-modal">
+        <span class="cart-close" id="close-cart">&times;</span>
+        <div class="cart-content">
+            <h3>Оформление заказа</h3>
+            <input type="text" placeholder="Имя">
+            <input type="text" placeholder="Фамилия">
+            <input type="text" placeholder="Город">
+            <select>
+                <option>Выберите способ доставки</option>
+                <option>Курьер</option>
+                <option>Самовывоз</option>
+            </select>
+            <h3>Оплата</h3>
+            <select>
+                <option>Оплата через Telegram</option>
+                <option>Оплата через СБП</option>
+            </select>
+            <button>Оформить заказ</button>
+        </div>
+    </div>
+
+    <script>
+        // Пример товаров
+        const products = [
+            { id: 1, name: 'Бежевая футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 1', collection: 'beige' },
+            { id: 2, name: 'Бежевая футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 2', collection: 'beige' },
+            { id: 3, name: 'Бежевая футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 3', collection: 'beige' },
+            { id: 4, name: 'Бежевая футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 4', collection: 'beige' },
+            { id: 5, name: 'Бежевая футболка 5', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 5', collection: 'beige' },
+            { id: 6, name: 'Белая футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 1', collection: 'white' },
+            { id: 7, name: 'Белая футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 2', collection: 'white' },
+            { id: 8, name: 'Белая футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 3', collection: 'white' },
+            { id: 9, name: 'Белая футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 4', collection: 'white' },
+            { id: 10, name: 'Белая футболка 5', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 5', collection: 'white' },
+            { id: 11, name: 'Черная футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 1', collection: 'black' },
+            { id: 12, name: 'Черная футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 2', collection: 'black' },
+            { id: 13, name: 'Черная футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 3', collection: 'black' },
+            { id: 14, name: 'Черная футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 4', collection: 'black' },
+            { id: 15, name: 'Черная футболка 5', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 5', collection: 'black' },
+        ];
+
+        let filteredProducts = [...products]; // Изначально все товары
+
+        const productList = document.getElementById('product-list');
+        const productModal = document.getElementById('product-modal');
+        const modalProductImg = document.getElementById('modal-product-img');
+        const modalProductDescription = document.getElementById('modal-product-description');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const cartModal = document.getElementById('cart-modal');
+        const searchInput = document.getElementById('search-input');
+        const collections = document.querySelectorAll('.collection');
+        let selectedCollection = null;
+
+        // Закрытие модального окна товара
+        document.getElementById('close-modal').addEventListener('click', () => {
+            productModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        });
+
+        // Закрытие корзины
+        document.getElementById('close-cart').addEventListener('click', () => {
+            cartModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        });
+
+        // Функция для отрисовки товаров
+        function renderProducts(productsToRender) {
+            productList.innerHTML = ''; // Очищаем список
+
+            // Сортируем товары в алфавитном порядке
+            productsToRender.sort((a, b) => a.name.localeCompare(b.name));
+
+            productsToRender.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <button>Добавить</button>
+                `;
+                productCard.addEventListener('click', () => {
+                    openProductModal(product);
+                });
+                productList.appendChild(productCard);
+            });
+
+            // Если количество товаров нечетное, центрируем последний товар
+            if (productsToRender.length % 2 !== 0) {
+                const lastProductCard = productList.lastChild;
+                lastProductCard.style.margin = '10px auto';
+            }
+        }
+
+        // Открытие модального окна с товаром
+        function openProductModal(product) {
+            modalProductImg.src = product.image;
+            modalProductDescription.textContent = product.description;
+            productModal.style.display = 'block';
+            document.body.classList.add('modal-open');
+        }
+
+        // Добавление товара в корзину
+        addToCartBtn.addEventListener('click', () => {
+            productModal.style.display = 'none';
+            cartModal.style.display = 'block';
+        });
+
+        // Обработка выбора коллекции
+        collections.forEach(collectionElement => {
+            collectionElement.addEventListener('click', () => {
+                if (selectedCollection === collectionElement.getAttribute('data-collection')) {
+                    // Если та же коллекция выбрана повторно, снимаем выделение
+                    selectedCollection = null;
+                    collectionElement.classList.remove('active');
+                    filteredProducts = [...products];
+                } else {
+                    // Выбираем новую коллекцию
+                    selectedCollection = collectionElement.getAttribute('data-collection');
+                    collections.forEach(el => el.classList.remove('active'));
+                    collectionElement.classList.add('active');
+                    filteredProducts = products.filter(product => product.collection === selectedCollection);
+                }
+                // Фильтруем товары по поисковому запросу
+                applySearchFilter();
+            });
+        });
+
+        // Поиск товаров
+        searchInput.addEventListener('input', () => {
+            applySearchFilter();
+        });
+
+        function applySearchFilter() {
+            const searchQuery = searchInput.value.toLowerCase();
+            const searchedProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchQuery));
+            renderProducts(searchedProducts);
+        }
+
+        // По умолчанию отображаем все товары в алфавитном порядке
+        renderProducts(filteredProducts);
+
+    </script>
+
+</body>
+</html>
