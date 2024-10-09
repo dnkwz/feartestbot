@@ -14,22 +14,26 @@
 
         /* Поисковая строка */
         .search-bar {
-            width: 100%;
-            padding: 10px;
-            background-color: #fff;
             position: fixed;
             top: 0;
-            left: 0;
-            z-index: 100;
-            border: 2px  solid blue; /* Синяя рамка вокруг строки поиска */
+            right: 10px; /* Поиск с правой стороны */
+            height: 10vh; /* Высота 10% от экрана */
+            width: 30%; /* Задаем ширину поиска */
+            background-color: #fff;
+            border: 2px solid blue; /* Синяя рамка */
             border-radius: 25px; /* Закругленные углы */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень для лучшего восприятия */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень */
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .search-bar input {
-            width: 100%;
+            width: 90%; /* Ширина поля внутри поиска */
+            height: 60%; /* Высота поля внутри поиска */
             padding: 10px;
-            border: none; /* Убираем стандартную рамку */
+            border: none;
             border-radius: 25px; /* Закругленные углы */
             font-size: 16px;
         }
@@ -38,11 +42,10 @@
         .collections {
             display: flex;
             justify-content: space-around;
-            margin-top: 60px;
             padding: 10px 0;
             background-color: #fff;
             position: fixed;
-            top: 60px;
+            top: 10vh; /* Сразу под строкой поиска */
             left: 0;
             width: 100%;
             z-index: 100;
@@ -67,7 +70,7 @@
             flex-wrap: wrap;
             justify-content: center;
             padding: 20px 10px;
-            margin-top: 120px; /* Отступ для фиксированных элементов сверху */
+            margin-top: 20vh; /* Отступ для фиксированных элементов сверху */
         }
 
         .product-card {
