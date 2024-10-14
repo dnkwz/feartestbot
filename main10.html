@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интернет-магазин</title>
+    <title>Магазин футболок</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,56 +12,74 @@
             background-color: #f8f9fa;
         }
 
-        /* Поисковая строка */
-        .search-bar {
+        /* Контейнер для поисковой строки */
+        .search-container {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
             position: fixed;
             top: 0;
-            right: 10px; /* Поиск с правой стороны */
-            height: 10vh; /* Высота 10% от экрана */
-            width: 30%; /* Задаем ширину поиска */
-            background-color: #fff;
-            border: 2px solid blue; /* Синяя рамка */
-            border-radius: 25px; /* Закругленные углы */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень */
             z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Поисковая строка */
+        .search-bar {
+            width: 90vw;
+            height: 8vh; /* Высота строки поиска в зависимости от экрана */
+            padding: 5px;
+            background-color: #fff;
+            border-radius: 25px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            border: 2px solid #007bff;
         }
 
         .search-bar input {
-            width: 90%; /* Ширина поля внутри поиска */
-            height: 60%; /* Высота поля внутри поиска */
-            padding: 10px;
+            width: 85%;
+            height: 90%;
+            padding-left: 15px;
             border: none;
-            border-radius: 25px; /* Закругленные углы */
+            outline: none;
             font-size: 16px;
+            border-radius: 25px;
+        }
+
+        /* Иконка поиска */
+        .search-bar i {
+            width: 10%;
+            color: #007bff;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
         /* Коллекции */
         .collections {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            margin-top: 12vh;
             padding: 10px 0;
-            background-color: #fff;
-            position: fixed;
-            top: 10vh; /* Сразу под строкой поиска */
-            left: 0;
+            background-color: #f8f9fa;
             width: 100%;
-            z-index: 100;
         }
 
         .collection {
             padding: 10px 20px;
-            background-color: #fff;
+            background-color: #ddd;
             border-radius: 25px;
-            border: 1px solid #ddd;
+            margin: 0 10px;
             cursor: pointer;
+            border: 2px solid transparent;
         }
 
         .collection.active {
-            background-color: #007bff;
-            color: #fff;
+            border: 2px solid #007bff;
+            background-color: #ddd;
         }
 
         /* Сетка товаров */
@@ -70,22 +88,22 @@
             flex-wrap: wrap;
             justify-content: center;
             padding: 20px 10px;
-            margin-top: 20vh; /* Отступ для фиксированных элементов сверху */
+            margin-top: 20px;
         }
 
         .product-card {
-            width: calc(44% - 20px); /* 44% ширины для карточки товара */
+            width: 44vw; /* 44% ширины экрана для каждого товара */
             padding: 10px;
             margin: 10px;
             background-color: #fff;
             border-radius: 15px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            cursor: pointer;
         }
 
         .product-card img {
-            width: 100%;
+            width: 100%; /* Установить ширину картинки на 100%, чтобы сохранить соотношение 1:1 */
+            height: auto;
             border-radius: 10px;
         }
 
@@ -99,133 +117,24 @@
             cursor: pointer;
         }
 
-        /* Модальное окно для карточки товара */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #fff; /* Сделаем фон белым для полноэкранного отображения */
-            z-index: 200;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            padding: 20px;
-        }
-
-        .modal-close {
-            position: fixed;
-            top: 10px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 210;
-        }
-
-        .modal img {
-            width: 100%;
-            border-radius: 15px;
-        }
-
-        .sizes {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-
-        .sizes button {
-            margin-right: 10px;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-
-        .add-to-cart {
-            width: 100%;
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        /* Корзина */
-        .cart {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #fff;
-            z-index: 300;
-            overflow-y: auto;
-        }
-
-        .cart-content {
-            padding: 20px;
-        }
-
-        .cart-close {
-            position: fixed;
-            top: 10px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 310;
-        }
-
-        .cart h3 {
-            margin-bottom: 20px;
-        }
-
-        .cart input, .cart select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-
-        .cart button {
-            width: 100%;
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-
-        /* Скрываем каталог, когда открыта модалка */
-        body.modal-open .search-bar,
-        body.modal-open .collections,
-        body.modal-open .products {
-            display: none;
-        }
     </style>
 </head>
 <body>
 
     <!-- Поисковая строка -->
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Поиск товаров...">
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Поиск...">
+            <i class="fa fa-search"></i>
+        </div>
     </div>
 
     <!-- Коллекции -->
     <div class="collections">
-        <div class="collection" data-collection="white">Белая</div>
-        <div class="collection" data-collection="black">Черная</div>
-        <div class="collection" data-collection="beige">Бежевая</div>
+        <div class="collection" data-collection="famille">Famille</div>
+        <div class="collection" data-collection="inception">Inception</div>
+        <div class="collection" data-collection="classic">Classic</div>
+        <div class="collection" data-collection="base">Base</div>
     </div>
 
     <!-- Товары -->
@@ -233,144 +142,87 @@
         <!-- Товары будут динамически добавлены через JS -->
     </div>
 
-    <!-- Модальное окно для товара -->
-    <div class="modal" id="product-modal">
-        <span class="modal-close" id="close-modal">&times;</span>
-        <div class="modal-content">
-            <img id="modal-product-img" src="" alt="Товар">
-            <div class="sizes" id="size-buttons">
-                <button>XS</button>
-                <button>S</button>
-                <button>M</button>
-                <button>L</button>
-                <button>XL</button>
-            </div>
-            <button class="add-to-cart" id="add-to-cart-btn">Добавить в корзину</button>
-            <p id="modal-product-description">Описание товара</p>
-        </div>
-    </div>
-
-    <!-- Корзина -->
-    <div class="cart" id="cart-modal">
-        <span class="cart-close" id="close-cart">&times;</span>
-        <div class="cart-content">
-            <h3>Оформление заказа</h3>
-            <input type="text" placeholder="Имя">
-            <input type="text" placeholder="Фамилия">
-            <input type="text" placeholder="Город">
-            <select>
-                <option>Выберите способ доставки</option>
-                <option>Курьер</option>
-                <option>Самовывоз</option>
-            </select>
-            <h3>Оплата</h3>
-            <select>
-                <option>Оплата через Telegram</option>
-                <option>Оплата через СБП</option>
-            </select>
-            <button>Оформить заказ</button>
-        </div>
-    </div>
-
     <script>
-        // Пример товаров
+        // Пример товаров для каждой коллекции (по 5 товаров в каждой)
         const products = [
-            { id: 1, name: 'Бежевая футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 1', collection: 'beige' },
-            { id: 2, name: 'Бежевая футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 2', collection: 'beige' },
-            { id: 3, name: 'Бежевая футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 3', collection: 'beige' },
-            { id: 4, name: 'Бежевая футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание бежевой футболки 4', collection: 'beige' },
-            { id: 5, name: 'Черная футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 1', collection: 'black' },
-            { id: 6, name: 'Черная футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 2', collection: 'black' },
-            { id: 7, name: 'Черная футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 3', collection: 'black' },
-            { id: 8, name: 'Черная футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание черной футболки 4', collection: 'black' },
-            { id: 9, name: 'Белая футболка 1', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 1', collection: 'white' },
-            { id: 10, name: 'Белая футболка 2', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 2', collection: 'white' },
-            { id: 11, name: 'Белая футболка 3', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 3', collection: 'white' },
-            { id: 12, name: 'Белая футболка 4', image: 'https://via.placeholder.com/200', description: 'Описание белой футболки 4', collection: 'white' },
+            { id: 1, name: 'Famille T-shirt 1', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'famille' },
+            { id: 2, name: 'Famille T-shirt 2', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'famille' },
+            { id: 3, name: 'Famille T-shirt 3', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'famille' },
+            { id: 4, name: 'Famille T-shirt 4', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'famille' },
+            { id: 5, name: 'Famille T-shirt 5', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'famille' },
+            { id: 6, name: 'Inception T-shirt 1', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'inception' },
+            { id: 7, name: 'Inception T-shirt 2', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'inception' },
+            { id: 8, name: 'Inception T-shirt 3', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'inception' },
+            { id: 9, name: 'Inception T-shirt 4', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'inception' },
+            { id: 10, name: 'Inception T-shirt 5', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'inception' },
+            { id: 11, name: 'Classic T-shirt 1', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'classic' },
+            { id: 12, name: 'Classic T-shirt 2', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'classic' },
+            { id: 13, name: 'Classic T-shirt 3', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'classic' },
+            { id: 14, name: 'Classic T-shirt 4', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'classic' },
+            { id: 15, name: 'Classic T-shirt 5', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'classic' },
+            { id: 16, name: 'Base T-shirt 1', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'base' },
+            { id: 17, name: 'Base T-shirt 2', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'base' },
+            { id: 18, name: 'Base T-shirt 3', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'base' },
+            { id: 19, name: 'Base T-shirt 4', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'base' },
+            { id: 20, name: 'Base T-shirt 5', image: 'https://via.placeholder.com/200', price: '2345₽', collection: 'base' },
         ];
 
+        let filteredProducts = [...products];
         const productList = document.getElementById('product-list');
+        const searchInput = document.getElementById('search-input');
+        const collections = document.querySelectorAll('.collection');
+        let selectedCollection = null;
 
-        // Функция для отображения товаров
-        function displayProducts(filter = null) {
+        // Функция для отрисовки товаров
+        function renderProducts(productsToRender) {
             productList.innerHTML = '';
-            products.forEach(product => {
-                if (!filter || product.collection === filter) {
-                    const productCard = document.createElement('div');
-                    productCard.classList.add('product-card');
-                    productCard.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <button class="view-details" data-id="${product.id}">Просмотреть</button>
-                    `;
-                    productList.appendChild(productCard);
-                }
-            });
-        }
-
-        // Отображаем все товары при загрузке
-        displayProducts();
-
-        // Обработка нажатий на коллекции
-        document.querySelectorAll('.collection').forEach(collection => {
-            collection.addEventListener('click', () => {
-                document.querySelectorAll('.collection').forEach(c => c.classList.remove('active'));
-                collection.classList.add('active');
-                displayProducts(collection.getAttribute('data-collection'));
-            });
-        });
-
-        // Обработка нажатий на кнопку "Просмотреть"
-        productList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('view-details')) {
-                const productId = e.target.getAttribute('data-id');
-                const product = products.find(p => p.id == productId);
-                document.getElementById('modal-product-img').src = product.image;
-                document.getElementById('modal-product-description').innerText = product.description;
-                document.getElementById('product-modal').style.display = 'block';
-                document.body.classList.add('modal-open');
-            }
-        });
-
-        // Закрытие модального окна
-        document.getElementById('close-modal').addEventListener('click', () => {
-            document.getElementById('product-modal').style.display = 'none';
-            document.body.classList.remove('modal-open');
-        });
-
-        // Обработка корзины
-        document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-            document.getElementById('product-modal').style.display = 'none';
-            document.body.classList.remove('modal-open');
-            document.getElementById('cart-modal').style.display = 'block';
-        });
-
-        // Закрытие корзины
-        document.getElementById('close-cart').addEventListener('click', () => {
-            document.getElementById('cart-modal').style.display = 'none';
-        });
-
-        // Обработка ввода в поиске
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const searchValue = e.target.value.toLowerCase();
-            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchValue));
-            displayFilteredProducts(filteredProducts);
-        });
-
-        // Отображение отфильтрованных товаров
-        function displayFilteredProducts(filteredProducts) {
-            productList.innerHTML = '';
-            filteredProducts.forEach(product => {
+            productsToRender.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.classList.add('product-card');
                 productCard.innerHTML = `
                     <img src="${product.image}" alt="${product.name}">
                     <h3>${product.name}</h3>
-                    <button class="view-details" data-id="${product.id}">Просмотреть</button>
+                    <p>${product.price}</p>
+                    <button>+ Добавить</button>
                 `;
                 productList.appendChild(productCard);
             });
         }
+
+        // Обработка фильтров
+        collections.forEach(collectionElement => {
+            collectionElement.addEventListener('click', () => {
+                if (selectedCollection === collectionElement.getAttribute('data-collection')) {
+                    selectedCollection = null;
+                    collectionElement.classList.remove('active');
+                    filteredProducts = [...products];
+                } else {
+                    selectedCollection = collectionElement.getAttribute('data-collection');
+                    collections.forEach(el => el.classList.remove('active'));
+                    collectionElement.classList.add('active');
+                    filteredProducts = products.filter(product => product.collection === selectedCollection);
+                }
+                applySearchFilter();
+            });
+        });
+
+        // Поиск товаров
+        searchInput.addEventListener('input', () => {
+            applySearchFilter();
+        });
+
+        function applySearchFilter() {
+            const searchQuery = searchInput.value.toLowerCase();
+            const searchedProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchQuery));
+            renderProducts(searchedProducts);
+        }
+
+        // По умолчанию отображаем все товары
+        renderProducts(filteredProducts);
+
     </script>
+    
+    <!-- Подключение иконок Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
