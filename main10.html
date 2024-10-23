@@ -209,4 +209,80 @@
             { name: 'Sweater green AW24', price: '3500₽', image: 'https://via.placeholder.com/300', collection: 'Base' },
         ];
 
-        const productList = document.getElementById('product
+        const productList = document.getElementById('product-list');
+        const productDetail = document.getElementById('product-detail');
+        const backButton = document.getElementById('back-button');
+        const detailImage = document.getElementById('detail-image');
+        const detailName = document.getElementById('detail-name');
+        const detailPrice = document.getElementById('detail-price');
+        const searchInput = document.getElementById('search-input');
+
+        const filters = document.querySelectorAll('.filters button');
+        let activeFilter = '';
+
+        filters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                const collection = filter.getAttribute('data-collection');
+                if (activeFilter === collection) {
+                    activeFilter = '';
+                    filter.classList.remove('active');
+                    renderProducts(products);
+                } else {
+                    activeFilter = collection;
+                    filters.forEach(f => f.classList.remove('active'));
+                    filter.classList.add('active');
+                    renderProducts(products.filter(product => product.collection === collection));
+                }
+            });
+        });
+
+        function renderProducts(products) {
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price}</p>
+                    <button>+ Добавить</button>
+                `;
+                productCard.addEventListener('click', () => {
+                    showProductDetail(product);
+                });
+                productList.appendChild(productCard);
+            });
+        }
+
+        function showProductDetail(product) {
+            productList.style.display = 'none';
+            productDetail.style.display = 'block';
+
+            detailImage.src = product.image;
+            detailName.textContent = product.name;
+            detailPrice.textContent = product.price;
+        }
+
+        backButton.addEventListener('click', () => {
+            productList.style.display = 'flex';
+            productDetail.style.display = 'none';
+        });
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchTerm));
+            renderProducts(filteredProducts);
+        });
+
+        // По умолчанию отображаем все товары
+        renderProducts(products);
+
+        // Telegram API адаптация для изменения тем
+        window.Telegram.WebApp.onEvent('themeChanged', function() {
+            document.body.style.backgroundColor = Telegram.WebApp.themeParams.bg_color || '#f5f5f5';
+            document.body.style.color = Telegram.WebApp.themeParams.text_color || '#000';
+        });
+    </script>
+
+</body>
+</html>
