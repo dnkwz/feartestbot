@@ -5,66 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Page</title>
     <style>
-        /* Основные стили для контейнера */
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
             font-family: Arial, sans-serif;
-            background-color: var(--bg-color, #ffffff); /* Поддержка смены тем в Telegram */
-            color: var(--text-color, #333); /* Цвет текста системы */
+            background-color: var(--tg-theme-bg-color, #ffffff); /* Используем цвета темы Telegram */
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 100%;
-            margin: 0 auto;
+            width: 100%;
             padding: 10px;
         }
 
-        /* Телеграм-стиль навигации */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: var(--bg-color, #000);
-        }
-
-        .back-button {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            color: var(--link-color, #c586dd); /* Цвет текста кнопки назад */
-            cursor: pointer;
-        }
-
-        .back-button::before {
-            content: '←';
-            margin-right: 5px;
-        }
-
-        .title {
-            flex-grow: 1;
-            text-align: center;
-            font-size: 16px;
-            color: var(--link-color, #c586dd);
-        }
-
-        /* Стиль для строки поиска */
+        /* Строка поиска */
         .search-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding: 0 10px;
+            padding: 0 5%;
         }
 
         .search-bar input {
-            width: 85%;
+            width: 90%;
             padding: 10px;
             border-radius: 25px;
             border: 2px solid #ccc;
@@ -80,29 +48,30 @@
         .search-bar button img {
             width: 20px;
             height: 20px;
-            filter: brightness(0) invert(1); /* Значок поиска будет одноцветным и зависит от темы */
+            filter: brightness(0) invert(1); /* Для одноцветного значка поиска */
         }
 
-        /* Стили для фильтров */
+        /* Фильтры */
         .filters {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
             margin-bottom: 20px;
-            padding: 0 10px;
+            padding: 0 5%;
         }
 
         .filters button {
-            background-color: #e6e6e6;
+            flex-grow: 1;
+            margin: 0 5px;
+            background-color: var(--tg-theme-secondary-bg-color, #e6e6e6);
             border: none;
             border-radius: 25px;
-            padding: 10px 20px;
+            padding: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .filters button.active {
-            background-color: #0088cc; /* Активный фильтр синий */
+            background-color: #0088cc;
             color: white;
         }
 
@@ -115,10 +84,11 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            padding: 0 5%;
         }
 
         .product-card {
-            background-color: white;
+            background-color: var(--tg-theme-bg-color, #ffffff);
             border-radius: 10px;
             padding: 10px;
             text-align: center;
@@ -156,7 +126,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             display: block;
-            width: 100%; /* Растягиваем по ширине */
+            width: 100%;
         }
 
         button.add-to-cart:hover {
@@ -181,13 +151,6 @@
     </style>
 </head>
 <body>
-    <!-- Навигация в стиле Телеграм -->
-    <div class="navbar">
-        <div class="back-button" onclick="goBack()">Назад</div>
-        <div class="title">Магазин Воплоти</div>
-        <div class="menu-button">...</div>
-    </div>
-
     <div class="container">
         <!-- Строка поиска -->
         <div class="search-bar">
@@ -206,14 +169,19 @@
         <!-- Продукты -->
         <div class="product-grid">
             <!-- Продукт -->
-            <div class="product-card" data-category="famille" onclick="openProductPage('famille')">
+            <div class="product-card" data-category="famille">
                 <img src="tshirt_black.jpg" alt="T-shirt black AW24">
                 <h3>T-shirt black AW24</h3>
                 <p>2345₽</p>
-                <button class="add-to-cart">+ Добавить</button>
+                <button class="add-to-cart" onclick="openProductPage('famille')">+ Добавить</button>
             </div>
-            
-            <!-- Добавь сюда остальные товары по коллекциям -->
+            <div class="product-card" data-category="famille">
+                <img src="tshirt_white.jpg" alt="T-shirt white AW24">
+                <h3>T-shirt white AW24</h3>
+                <p>2345₽</p>
+                <button class="add-to-cart" onclick="openProductPage('famille')">+ Добавить</button>
+            </div>
+            <!-- Добавь остальные товары для каждой категории -->
         </div>
 
         <!-- Страница товара -->
@@ -227,19 +195,41 @@
     </div>
 
     <script>
-        function goBack() {
-            // Логика возврата на предыдущую страницу
-            document.getElementById('product-page').classList.remove('active');
-            document.querySelector('.search-bar').classList.remove('hidden');
-            document.querySelector('.filters').classList.remove('hidden');
-        }
-
+        // Показ и скрытие страницы товара
         function openProductPage(productCategory) {
-            // Открыть страницу товара
             document.getElementById('product-page').classList.add('active');
             document.querySelector('.search-bar').classList.add('hidden');
             document.querySelector('.filters').classList.add('hidden');
         }
+
+        // Telegram Web App интеграция
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.body.style.backgroundColor = Telegram.WebApp.themeParams.bg_color;
+            document.body.style.color = Telegram.WebApp.themeParams.text_color;
+        });
+
+        Telegram.WebApp.expand();
+
+        // Логика для фильтров
+        const filterButtons = document.querySelectorAll('.filter');
+        const products = document.querySelectorAll('.product-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const category = button.getAttribute('data-filter');
+
+                products.forEach(product => {
+                    if (category === 'all' || product.getAttribute('data-category') === category) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
