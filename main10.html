@@ -5,73 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Page</title>
     <style>
+        /* Основные стили для контейнера */
         * {
             box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff); /* Используем цвета темы Telegram */
-            color: var(--tg-theme-text-color, #000000);
             margin: 0;
             padding: 0;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff); /* Цвет фона в зависимости от темы Telegram */
+            color: var(--tg-theme-text-color, #333); /* Цвет текста также зависит от темы Telegram */
+            padding: 20px;
+        }
+
         .container {
-            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
             padding: 10px;
         }
 
-        /* Строка поиска */
+        /* Стиль для строки поиска */
         .search-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
-            padding: 0 5%;
         }
 
         .search-bar input {
-            width: 90%;
+            width: 80%;
             padding: 10px;
             border-radius: 25px;
             border: 2px solid #ccc;
             outline: none;
+            color: var(--tg-theme-text-color, #333); /* Цвет текста в зависимости от темы */
+            background-color: var(--tg-theme-bg-color, #fff); /* Цвет фона ввода зависит от темы */
         }
 
         .search-bar button {
             background: none;
             border: none;
+            margin-left: -40px;
             cursor: pointer;
         }
 
         .search-bar button img {
             width: 20px;
             height: 20px;
-            filter: brightness(0) invert(1); /* Для одноцветного значка поиска */
+            filter: var(--tg-theme-icon-filter, none); /* Применяем фильтр для значка поиска */
         }
 
-        /* Фильтры */
+        /* Стили для фильтров */
         .filters {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
-            padding: 0 5%;
         }
 
         .filters button {
-            flex-grow: 1;
-            margin: 0 5px;
-            background-color: var(--tg-theme-secondary-bg-color, #e6e6e6);
+            background-color: var(--tg-theme-secondary-bg-color, #e6e6e6); /* Цвет кнопки фильтра в зависимости от темы */
             border: none;
             border-radius: 25px;
-            padding: 10px;
+            padding: 10px 20px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .filters button.active {
-            background-color: #0088cc;
+            background-color: var(--tg-theme-button-color, #0088cc); /* Активный фильтр синий (по теме) */
             color: white;
         }
 
@@ -84,11 +87,10 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            padding: 0 5%;
         }
 
         .product-card {
-            background-color: var(--tg-theme-bg-color, #ffffff);
+            background-color: var(--tg-theme-bg-color, white); /* Цвет карточки продукта в зависимости от темы */
             border-radius: 10px;
             padding: 10px;
             text-align: center;
@@ -106,46 +108,37 @@
         .product-card h3 {
             font-size: 1.2rem;
             margin: 10px 0;
+            color: var(--tg-theme-text-color, #333); /* Цвет текста зависит от темы */
         }
 
         .product-card p {
             font-size: 1rem;
             font-weight: bold;
-            color: #333;
+            color: var(--tg-theme-hint-color, #333); /* Цвет цены зависит от темы */
             margin-bottom: 10px;
         }
 
-        /* Кнопка "Добавить в корзину" */
+        /* Кнопка "Добавить в корзину", прикрепленная к низу экрана */
         button.add-to-cart {
-            background-color: #0088cc;
-            color: white;
+            background-color: var(--tg-theme-button-color, #0088cc); /* Цвет кнопки в зависимости от темы Telegram */
+            color: var(--tg-theme-button-text-color, white); /* Цвет текста кнопки */
             border: none;
             border-radius: 25px;
-            padding: 10px 20px;
+            padding: 15px 20px;
             font-size: 1rem;
             cursor: pointer;
+            position: fixed;
+            bottom: 20px; /* Прикрепляем кнопку к низу экрана */
+            left: 10px;
+            right: 10px;
+            width: calc(100% - 20px);
+            max-width: 600px; /* Максимальная ширина для более крупных экранов */
+            margin: 0 auto;
             transition: background-color 0.3s ease;
-            display: block;
-            width: 100%;
         }
 
         button.add-to-cart:hover {
-            background-color: #006699;
-        }
-
-        /* Страница товара */
-        .product-page {
-            display: none;
-            padding: 10px;
-        }
-
-        .product-page.active {
-            display: block;
-        }
-
-        /* Скрытие поиска и фильтров на странице товара */
-        .search-bar.hidden, .filters.hidden {
-            display: none;
+            background-color: var(--tg-theme-button-color-active, #006699); /* Цвет кнопки при наведении */
         }
 
     </style>
@@ -173,63 +166,46 @@
                 <img src="tshirt_black.jpg" alt="T-shirt black AW24">
                 <h3>T-shirt black AW24</h3>
                 <p>2345₽</p>
-                <button class="add-to-cart" onclick="openProductPage('famille')">+ Добавить</button>
             </div>
+            
             <div class="product-card" data-category="famille">
                 <img src="tshirt_white.jpg" alt="T-shirt white AW24">
                 <h3>T-shirt white AW24</h3>
                 <p>2345₽</p>
-                <button class="add-to-cart" onclick="openProductPage('famille')">+ Добавить</button>
             </div>
-            <!-- Добавь остальные товары для каждой категории -->
-        </div>
 
-        <!-- Страница товара -->
-        <div class="product-page" id="product-page">
-            <img src="tshirt_black.jpg" alt="T-shirt black AW24" style="width: 100%; border-radius: 10px;">
-            <h3>T-shirt black AW24</h3>
-            <p>2345₽</p>
-            <button class="add-to-cart">Добавить в корзину</button>
-            <div style="margin-top: 20px;">Описание...</div>
+            <div class="product-card" data-category="inception">
+                <img src="tshirt_red.jpg" alt="T-shirt red AW24">
+                <h3>T-shirt red AW24</h3>
+                <p>2345₽</p>
+            </div>
+
+            <div class="product-card" data-category="classic">
+                <img src="tshirt_blue.jpg" alt="T-shirt blue AW24">
+                <h3>T-shirt blue AW24</h3>
+                <p>2345₽</p>
+            </div>
+
+            <div class="product-card" data-category="base">
+                <img src="tshirt_green.jpg" alt="T-shirt green AW24">
+                <h3>T-shirt green AW24</h3>
+                <p>2345₽</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Показ и скрытие страницы товара
-        function openProductPage(productCategory) {
-            document.getElementById('product-page').classList.add('active');
-            document.querySelector('.search-bar').classList.add('hidden');
-            document.querySelector('.filters').classList.add('hidden');
-        }
+    <!-- Кнопка добавления в корзину, прикреплена к низу экрана -->
+    <button class="add-to-cart">+ Добавить в корзину</button>
 
-        // Telegram Web App интеграция
+    <script>
+        // Telegram Web App интеграция для получения темы и смены стилей
         Telegram.WebApp.onEvent('themeChanged', function() {
             document.body.style.backgroundColor = Telegram.WebApp.themeParams.bg_color;
             document.body.style.color = Telegram.WebApp.themeParams.text_color;
         });
 
+        // Расширение приложения Telegram
         Telegram.WebApp.expand();
-
-        // Логика для фильтров
-        const filterButtons = document.querySelectorAll('.filter');
-        const products = document.querySelectorAll('.product-card');
-
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                const category = button.getAttribute('data-filter');
-
-                products.forEach(product => {
-                    if (category === 'all' || product.getAttribute('data-category') === category) {
-                        product.style.display = 'block';
-                    } else {
-                        product.style.display = 'none';
-                    }
-                });
-            });
-        });
     </script>
 </body>
 </html>
